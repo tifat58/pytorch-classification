@@ -1,13 +1,13 @@
 base:
-  data_path: /path/to/your/dataset
-  data_index: null # alternative way to build dataset. check README for more details
-  save_path: /path/to/save/folder
-  log_path: /path/to/save/log/folder
+  data_path: null
+  data_index: '/mnt/sda/haal02-data/Kaggle-Retinopathy-Datasets/dr-data/kaggle_data_dict_truncated.pkl' # alternative way to build dataset. check README for more details
+  save_path: '/mnt/sda/haal02-data/results/classification_results/resnet50/saves'
+  log_path: '/mnt/sda/haal02-data/results/classification_results/resnet50/logs'
   device: cuda
   random_seed: 0
 
 data:
-  num_classes: 100 # number of classes
+  num_classes: 5 # number of classes
   input_size: 224
   mean: auto # 'auto' or a list of three numbers for RGB
   std: auto # 'auto' or a list of three numbers for RGB

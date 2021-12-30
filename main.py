@@ -11,7 +11,8 @@ from train import train, evaluate
 from utils.metrics import Estimator
 from data.builder import generate_dataset
 from modules.builder import generate_model
-
+os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"   # see issue #152
+os.environ["CUDA_VISIBLE_DEVICES"]="1"
 
 def main():
     args = parse_config()
@@ -20,7 +21,9 @@ def main():
     # create folder
     save_path = cfg.base.save_path
     log_path = cfg.base.log_path
+    print(save_path)
     if os.path.exists(save_path):
+
         warning = 'Save path {} exists.\nDo you want to overwrite it? (y/n)\n'.format(save_path)
         if not (args.overwrite or input(warning) == 'y'):
             sys.exit(0)
