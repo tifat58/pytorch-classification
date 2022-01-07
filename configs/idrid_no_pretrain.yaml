@@ -1,16 +1,16 @@
 base:
   data_path: null
-  data_index: '/mnt/sda/haal02-data/Kaggle-Retinopathy-Datasets/dr-data/kaggle_data_dict.pkl' # alternative way to build dataset. check README for more details
-  save_path: '/mnt/sda/haal02-data/results/classification_results/resnet50_full_30_12/saves'
-  log_path: '/mnt/sda/haal02-data/results/classification_results/resnet50_full_30_12/logs'
+  data_index: '/mnt/sda/haal02-data/IDRID-updated/idrid_data_dict.pkl' # alternative way to build dataset. check README for more details
+  save_path: '/mnt/sda/haal02-data/results/classification_results/idrid_results/resnet50_full_30_12_no_pretrain/saves'
+  log_path: '/mnt/sda/haal02-data/results/classification_results/idrid_results/resnet50_full_30_12_no_pretrain/logs'
   device: cuda
   random_seed: 1
 
 data:
   num_classes: 5 # number of classes
   input_size: 512
-  mean: [0.425753653049469, 0.29737451672554016, 0.21293757855892181] # 'auto' or a list of three numbers for RGB
-  std: [0.27670302987098694, 0.20240527391433716, 0.1686241775751114] # 'auto' or a list of three numbers for RGB
+  mean: auto #[0.425753653049469, 0.29737451672554016, 0.21293757855892181] # 'auto' or a list of three numbers for RGB
+  std: auto #[0.27670302987098694, 0.20240527391433716, 0.1686241775751114] # 'auto' or a list of three numbers for RGB
   sampling_strategy: instance_balanced # instance_balanced / class_balanced / progressively_balanced. ref: https://arxiv.org/abs/1910.09217
   sampling_weights_decay_rate: 0.9 # if sampling_strategy is progressively_balanced, sampling weight will change from class_balanced to instance_balanced
   data_augmentation: # available operations are list in 'data_augmentation_args' below
@@ -24,14 +24,14 @@ data:
 train:
   network: resnet50 # available networks are list in networks.yaml
   pretrained: true # load weights from pre-trained model training on ImageNet
-  checkpoint: null #'/mnt/sda/haal02-data/results/classification_results/resnet50/saves/final_weights.pt' # load weights from other pretrained model
-  epochs: 25
+  checkpoint: null #'/mnt/sda/haal02-data/results/classification_results/resnet50_full_30_12/saves/final_weights.pt' # load weights from other pretrained model
+  epochs: 120
   batch_size: 32
   num_workers: 8 # number of cpus used to load data at each step
-  criterion: mean_square_error # available criterions are list in 'criterion_args' below
-  loss_weight: null # null / balance / dynamic / list with shape num_classes. Weights for loss function. Don't use it with weighted sampling!
+  criterion: cross_entropy #mean_square_error # available criterions are list in 'criterion_args' below
+  loss_weight: [0.16895776055986003, 0.23794051487128215, 0.16770807298175455, 0.20519870032491874, 0.22019495126218444] # null / balance / dynamic / list with shape num_classes. Weights for loss function. Don't use it with weighted sampling!
   loss_weight_decay_rate: 0 # if loss_weights is dynamic, loss weight will decay from balance to equivalent weights
-  warmup_epochs: 0 # set to 0 to disable warmup
+  warmup_epochs: 7 # set to 0 to disable warmup
   kappa_prior: true # save model with higher kappa or higher accuracy in validation set
   save_interval: 5 # the epoch interval of saving model
   eval_interval: 1 # the epoch interval of evaluating model on val dataset
@@ -62,7 +62,7 @@ scheduler_args:
   exponential:
     gamma: 0.6 # multiplicative factor of learning rate decay
   multiple_steps:
-    milestones: [15, 25, 45]
+    milestones: [15, 25, 45, 80]
     gamma: 0.1 # multiplicative factor of learning rate decay
   cosine:
     T_max: 50 # maximum number of iterations
